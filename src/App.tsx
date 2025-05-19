@@ -6,17 +6,19 @@ import { UserCircle, School, BookOpen, Briefcase, FileBadge, Code, HeartHandshak
 // Import components
 import Navigation from './components/Navigation';
 import FloatingMenu from './components/FloatingMenu';
-import ProfileSection from './components/ProfileSection';
-import CertificateSection from './components/CertificateSection';
-import Courses from './components/Courses';
-import Skill from './components/Skill';
-import Contact from './components/Contact';
-import Information from './components/Information';
-import Education from './components/Education';
-import Experience from './components/Experience';
 import Footer from './components/Footer';
 import InstallPWA from './components/InstallPWA';
 import { content, certificates } from './data/content';
+
+// Import section components
+import ProfileSection from './components/sections/ProfileSection';
+import EducationSection from './components/sections/EducationSection';
+import CoursesSection from './components/sections/CoursesSection';
+import ExperienceSection from './components/sections/ExperienceSection';
+import CertificateSection from './components/sections/CertificateSection';
+import SkillsSection from './components/sections/SkillsSection';
+import InformationSection from './components/sections/InformationSection';
+import ContactSection from './components/sections/ContactSection';
 
 function App() {
   const [language, setLanguage] = useState<'en' | 'bn'>('en');
@@ -86,35 +88,17 @@ function App() {
 
       <main className="container mx-auto px-4 py-12">
         <div className="grid grid-cols-1 gap-8">
-          <Element name="education">
-            <Education language={language} />
-          </Element>
-
-          <Element name="courses">
-            <Courses language={language} />
-          </Element>
-
-          <Element name="experience">
-            <Experience language={language} />
-          </Element>
-
+          <EducationSection language={language} />
+          <CoursesSection language={language} />
+          <ExperienceSection language={language} />
           <CertificateSection
             language={language}
             content={content}
             certificates={certificates}
           />
-
-          <Element name="skills">
-            <Skill language={language} />
-          </Element>
-
-          <Element name="family">
-            <Information language={language} age={age} />
-          </Element>
-
-          <Element name="contact">
-            <Contact language={language} />
-          </Element>
+          <SkillsSection language={language} />
+          <InformationSection language={language} age={age} />
+          <ContactSection language={language} />
         </div>
       </main>
 
