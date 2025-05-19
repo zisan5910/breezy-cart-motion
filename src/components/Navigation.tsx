@@ -1,25 +1,23 @@
+
 import { useState, useEffect } from 'react';
 import { Menu, X } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useInView } from 'react-intersection-observer';
+import { Link, useLocation } from 'react-router-dom';
 import { cn } from '../lib/utils';
 
 interface NavigationProps {
   navigationItems: Array<{
     id: string;
     icon: JSX.Element;
-    target?: string;
+    path: string;
   }>;
-  activeSection: string;
-  scrollToSection: (section: string) => void;
   language: 'en' | 'bn';
   setLanguage: (lang: 'en' | 'bn') => void;
 }
 
 const Navigation = ({
   navigationItems,
-  activeSection,
-  scrollToSection,
   language,
   setLanguage,
 }: NavigationProps) => {
@@ -29,6 +27,8 @@ const Navigation = ({
     threshold: 0,
     initialInView: true,
   });
+  
+  const location = useLocation();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -82,32 +82,30 @@ const Navigation = ({
           {/* Desktop Navigation - Shows on lg screens and larger (1024px+) */}
           <div className="hidden lg:flex items-center space-x-2">
             {navigationItems.map((item) => (
-              <motion.button
-                key={item.id}
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-                onClick={() => scrollToSection(item.target || item.id)}
-                className={cn(
-                  'flex items-center gap-2 px-4 py-2 rounded-md transition-all duration-300',
-                  activeSection === (item.target || item.id)
-                    ? 'bg-green-100 text-green-700 shadow-sm'
-                    : 'text-gray-600 hover:bg-gray-100'
-                )}
-              >
-                <motion.div
-                  animate={{
-                    rotate:
-                      activeSection === (item.target || item.id) ? 360 : 0,
-                  }}
-                  transition={{ duration: 0.5 }}
-                  className="w-5 h-5"
+              <motion.div key={item.id} whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+                <Link
+                  to={item.path}
+                  className={cn(
+                    'flex items-center gap-2 px-4 py-2 rounded-md transition-all duration-300',
+                    location.pathname === item.path
+                      ? 'bg-green-100 text-green-700 shadow-sm'
+                      : 'text-gray-600 hover:bg-gray-100'
+                  )}
                 >
-                  {item.icon}
-                </motion.div>
-                <span className="font-medium">
-                  {item.id.charAt(0).toUpperCase() + item.id.slice(1)}
-                </span>
-              </motion.button>
+                  <motion.div
+                    animate={{
+                      rotate: location.pathname === item.path ? 360 : 0,
+                    }}
+                    transition={{ duration: 0.5 }}
+                    className="w-5 h-5"
+                  >
+                    {item.icon}
+                  </motion.div>
+                  <span className="font-medium">
+                    {item.id.charAt(0).toUpperCase() + item.id.slice(1)}
+                  </span>
+                </Link>
+              </motion.div>
             ))}
           </div>
 
@@ -139,37 +137,37 @@ const Navigation = ({
             >
               <div className="px-2 pt-2 pb-3 space-y-1">
                 {navigationItems.map((item, index) => (
-                  <motion.button
+                  <motion.div
                     key={item.id}
                     initial={{ opacity: 0, x: -20 }}
                     animate={{ opacity: 1, x: 0 }}
                     transition={{ delay: index * 0.1 }}
                     whileTap={{ scale: 0.95 }}
-                    onClick={() => {
-                      scrollToSection(item.target || item.id);
-                      setIsMenuOpen(false);
-                    }}
-                    className={cn(
-                      'w-full flex items-center gap-3 px-4 py-3 rounded-md transition-all duration-300',
-                      activeSection === (item.target || item.id)
-                        ? 'bg-green-100 text-green-700 shadow-sm'
-                        : 'text-gray-600 hover:bg-gray-100'
-                    )}
                   >
-                    <motion.div
-                      animate={{
-                        rotate:
-                          activeSection === (item.target || item.id) ? 360 : 0,
-                      }}
-                      transition={{ duration: 0.5 }}
-                      className="w-6 h-6"
+                    <Link
+                      to={item.path}
+                      onClick={() => setIsMenuOpen(false)}
+                      className={cn(
+                        'w-full flex items-center gap-3 px-4 py-3 rounded-md transition-all duration-300',
+                        location.pathname === item.path
+                          ? 'bg-green-100 text-green-700 shadow-sm'
+                          : 'text-gray-600 hover:bg-gray-100'
+                      )}
                     >
-                      {item.icon}
-                    </motion.div>
-                    <span className="font-medium">
-                      {item.id.charAt(0).toUpperCase() + item.id.slice(1)}
-                    </span>
-                  </motion.button>
+                      <motion.div
+                        animate={{
+                          rotate: location.pathname === item.path ? 360 : 0,
+                        }}
+                        transition={{ duration: 0.5 }}
+                        className="w-6 h-6"
+                      >
+                        {item.icon}
+                      </motion.div>
+                      <span className="font-medium">
+                        {item.id.charAt(0).toUpperCase() + item.id.slice(1)}
+                      </span>
+                    </Link>
+                  </motion.div>
                 ))}
               </div>
             </motion.div>

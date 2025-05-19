@@ -1,26 +1,38 @@
 
 import { useState, useEffect } from 'react';
-import { Element, scroller } from 'react-scroll';
-import { UserCircle, School, BookOpen, Briefcase, FileBadge, Code, HeartHandshake, Mail, Share2 } from 'lucide-react';
+import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
+import { UserCircle, School, BookOpen, Briefcase, FileBadge, Code, HeartHandshake, Mail } from 'lucide-react';
 
 // Import components
 import Navigation from './components/Navigation';
 import FloatingMenu from './components/FloatingMenu';
-import ProfileSection from './components/ProfileSection';
-import CertificateSection from './components/CertificateSection';
-import Courses from './components/Courses';
-import Skill from './components/Skill';
-import Contact from './components/Contact';
-import Information from './components/Information';
-import Education from './components/Education';
-import Experience from './components/Experience';
 import Footer from './components/Footer';
 import InstallPWA from './components/InstallPWA';
-import { content, certificates } from './data/content';
+import { content } from './data/content';
+
+// Import pages
+import ProfilePage from './pages/ProfilePage';
+import EducationPage from './pages/EducationPage';
+import CoursesPage from './pages/CoursesPage';
+import ExperiencePage from './pages/ExperiencePage';
+import CertificatesPage from './pages/CertificatesPage';
+import SkillsPage from './pages/SkillsPage';
+import FamilyPage from './pages/FamilyPage';
+import ContactPage from './pages/ContactPage';
+
+// Scroll to top component
+const ScrollToTop = () => {
+  const { pathname } = useLocation();
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [pathname]);
+
+  return null;
+};
 
 function App() {
   const [language, setLanguage] = useState<'en' | 'bn'>('en');
-  const [activeSection, setActiveSection] = useState<string>('profile');
   const [age, setAge] = useState<number>(0);
 
   useEffect(() => {
@@ -46,88 +58,48 @@ function App() {
   }, []);
 
   const navigationItems = [
-    { id: 'profile', icon: <UserCircle size={20} /> },
-    { id: 'education', icon: <School size={20} /> },
-    { id: 'courses', icon: <BookOpen size={20} /> },
-    { id: 'experience', icon: <Briefcase size={20} /> },
-    { id: 'certificates', icon: <FileBadge size={20} /> },
-    { id: 'skills', icon: <Code size={20} /> },
-    { id: 'family', icon: <HeartHandshake size={20} /> },
-    { id: 'contact', icon: <Mail size={20} /> },
-    { id: 'social-links', icon: <Share2 size={20} />, target: 'footer' }
+    { id: 'profile', icon: <UserCircle size={20} />, path: '/' },
+    { id: 'education', icon: <School size={20} />, path: '/education' },
+    { id: 'courses', icon: <BookOpen size={20} />, path: '/courses' },
+    { id: 'experience', icon: <Briefcase size={20} />, path: '/experience' },
+    { id: 'certificates', icon: <FileBadge size={20} />, path: '/certificates' },
+    { id: 'skills', icon: <Code size={20} />, path: '/skills' },
+    { id: 'family', icon: <HeartHandshake size={20} />, path: '/family' },
+    { id: 'contact', icon: <Mail size={20} />, path: '/contact' }
   ];
 
-  const scrollToSection = (section: string) => {
-    scroller.scrollTo(section, {
-      duration: 800,
-      smooth: true,
-      offset: -64,
-    });
-    setActiveSection(section);
-  };
-
   return (
-    <div className="min-h-screen bg-slate-50">
-      <Navigation 
-        navigationItems={navigationItems}
-        activeSection={activeSection}
-        scrollToSection={scrollToSection}
-        language={language}
-        setLanguage={setLanguage}
-      />
+    <Router>
+      <div className="min-h-screen bg-slate-50">
+        <Navigation 
+          navigationItems={navigationItems}
+          language={language}
+          setLanguage={setLanguage}
+        />
 
-      <InstallPWA language={language} />
+        <InstallPWA language={language} />
+        
+        <ScrollToTop />
 
-      <ProfileSection
-        language={language}
-        content={content as any}
-        scrollToSection={scrollToSection}
-      />
+        <Routes>
+          <Route path="/" element={<ProfilePage language={language} />} />
+          <Route path="/education" element={<EducationPage language={language} />} />
+          <Route path="/courses" element={<CoursesPage language={language} />} />
+          <Route path="/experience" element={<ExperiencePage language={language} />} />
+          <Route path="/certificates" element={<CertificatesPage language={language} />} />
+          <Route path="/skills" element={<SkillsPage language={language} />} />
+          <Route path="/family" element={<FamilyPage language={language} age={age} />} />
+          <Route path="/contact" element={<ContactPage language={language} />} />
+        </Routes>
 
-      <main className="container mx-auto px-4 py-12">
-        <div className="grid grid-cols-1 gap-8">
-          <Element name="education">
-            <Education language={language} />
-          </Element>
-
-          <Element name="courses">
-            <Courses language={language} />
-          </Element>
-
-          <Element name="experience">
-            <Experience language={language} />
-          </Element>
-
-          <CertificateSection
-            language={language}
-            content={content}
-            certificates={certificates}
-          />
-
-          <Element name="skills">
-            <Skill language={language} />
-          </Element>
-
-          <Element name="family">
-            <Information language={language} age={age} />
-          </Element>
-
-          <Element name="contact">
-            <Contact language={language} />
-          </Element>
-        </div>
-      </main>
-
-      <Element name="footer">
         <Footer
           language={language}
-          scrollToSection={scrollToSection}
           content={content}
         />
-      </Element>
 
-      <FloatingMenu />
-    </div>
+        <FloatingMenu />
+      </div>
+    </Router>
   );
 }
 

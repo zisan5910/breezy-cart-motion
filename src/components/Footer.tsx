@@ -1,379 +1,161 @@
 
+import { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Element } from 'react-scroll';
-import {
-  Mail,
-  Phone,
-  MapPin,
-  Linkedin,
-  FileText,
-  Download,
-  Award,
-  MessageCircle,
-  Facebook,
-  Instagram,
-  Twitter,
-  UserCircle,
-  School,
-  BookOpen,
-  Briefcase,
-  FileBadge,
-  Code,
-  HeartHandshake,
-  Share2,
-} from 'lucide-react';
+import { Link } from 'react-router-dom';
+import { UserCircle, School, BookOpen, Briefcase, FileBadge, Code, HeartHandshake, Mail } from 'lucide-react';
+import { cn } from '../lib/utils';
 
 interface FooterProps {
   language: 'en' | 'bn';
-  scrollToSection: (section: string) => void;
-  content: {
-    [key: string]: any;
-    sections: {
-      [key: string]: string;
-    };
-    contact: string;
-    name: string;
-  };
+  content: any;
 }
 
-const Footer = ({ language, scrollToSection, content }: FooterProps) => {
-  const footerData = {
-    quickLinks: {
-      title: {
-        en: 'Quick Links',
-        bn: 'দ্রুত লিঙ্ক',
-      },
-      items: [
-        {
-          icon: <UserCircle size={16} className="text-indigo-400" />,
-          text: {
-            en: 'Profile',
-            bn: 'প্রোফাইল',
-          },
-          action: () => scrollToSection('profile'),
-        },
-        {
-          icon: <School size={16} className="text-blue-400" />,
-          text: {
-            en: 'Education',
-            bn: 'শিক্ষা',
-          },
-          action: () => scrollToSection('education'),
-        },
-        {
-          icon: <BookOpen size={16} className="text-emerald-400" />,
-          text: {
-            en: 'Courses',
-            bn: 'কোর্সসমূহ',
-          },
-          action: () => scrollToSection('courses'),
-        },
-        {
-          icon: <Briefcase size={16} className="text-amber-400" />,
-          text: {
-            en: 'Experience',
-            bn: 'অভিজ্ঞতা',
-          },
-          action: () => scrollToSection('experience'),
-        },
-        {
-          icon: <FileBadge size={16} className="text-red-400" />,
-          text: {
-            en: 'Certificates',
-            bn: 'সার্টিফিকেট',
-          },
-          action: () => scrollToSection('certificates'),
-        },
-        {
-          icon: <Code size={16} className="text-purple-400" />,
-          text: {
-            en: 'Skills',
-            bn: 'দক্ষতা',
-          },
-          action: () => scrollToSection('skills'),
-        },
-        {
-          icon: <HeartHandshake size={16} className="text-pink-400" />,
-          text: {
-            en: 'Family',
-            bn: 'পরিবার',
-          },
-          action: () => scrollToSection('family'),
-        },
-        {
-          icon: <Mail size={16} className="text-cyan-400" />,
-          text: {
-            en: 'Contact',
-            bn: 'যোগাযোগ',
-          },
-          action: () => scrollToSection('contact'),
-        },
-        {
-          icon: <Share2 size={16} className="text-teal-400" />,
-          text: {
-            en: 'Share',
-            bn: 'শেয়ার',
-          },
-          action: () => scrollToSection('social-links'),
-        },
-      ],
+const Footer = ({ language, content }: FooterProps) => {
+  const [isEmailCopied, setIsEmailCopied] = useState(false);
+
+  const quickLinks = [
+    { name: language === 'en' ? 'Profile' : 'প্রোফাইল', icon: <UserCircle size={16} />, path: '/' },
+    { name: language === 'en' ? 'Education' : 'শিক্ষা', icon: <School size={16} />, path: '/education' },
+    { name: language === 'en' ? 'Courses' : 'কোর্স', icon: <BookOpen size={16} />, path: '/courses' },
+    { name: language === 'en' ? 'Experience' : 'অভিজ্ঞতা', icon: <Briefcase size={16} />, path: '/experience' },
+    { name: language === 'en' ? 'Certificates' : 'সার্টিফিকেট', icon: <FileBadge size={16} />, path: '/certificates' },
+    { name: language === 'en' ? 'Skills' : 'দক্ষতা', icon: <Code size={16} />, path: '/skills' },
+    { name: language === 'en' ? 'Family' : 'পরিবার', icon: <HeartHandshake size={16} />, path: '/family' },
+    { name: language === 'en' ? 'Contact' : 'যোগাযোগ', icon: <Mail size={16} />, path: '/contact' },
+  ];
+
+  const socialMedias = [
+    {
+      name: 'Instagram',
+      url: content.socialLinks.instagram,
+      icon: '/social/instagram.svg',
     },
-    documents: {
-      title: {
-        en: 'Important Documents',
-        bn: 'গুরুত্বপূর্ণ ডকুমেন্টস',
-      },
-      items: [
-        {
-          icon: <Download size={16} className="text-emerald-400" />,
-          text: {
-            en: 'Resume (PDF)',
-            bn: 'জীবনবৃত্তান্ত (পিডিএফ)',
-          },
-          action: () => {
-            const link = document.createElement('a');
-            link.href = '/Resume.pdf';
-            link.download = 'Md Ridoan Mahmud Zisan.pdf';
-            link.click();
-          },
-        },
-        {
-          icon: <Award size={16} className="text-amber-400" />,
-          text: {
-            en: 'Certificates',
-            bn: 'সার্টিফিকেট',
-          },
-          action: () => scrollToSection('certificates'),
-        },
-      ],
+    {
+      name: 'GitHub',
+      url: content.socialLinks.github,
+      icon: '/social/github.svg',
     },
-    contact: {
-      title: {
-        en: 'Contact',
-        bn: 'যোগাযোগ',
-      },
-      items: [
-        {
-          icon: <MapPin size={16} className="text-red-400" />,
-          text: {
-            en: 'Bogura, Bangladesh',
-            bn: 'বগুড়া, বাংলাদেশ',
-          },
-        },
-        {
-          icon: <Mail size={16} className="text-blue-400" />,
-          text: 'ridoan.zisan@gmail.com',
-          link: 'mailto:ridoan.zisan@gmail.com',
-        },
-        {
-          icon: <Phone size={16} className="text-green-400" />,
-          text: {
-            en: '+8801712525910',
-            bn: '+৮৮০১৭১২৫২৫৯১০',
-          },
-          link: 'tel:+8801712525910',
-        },
-      ],
+    {
+      name: 'Facebook',
+      url: content.socialLinks.facebook,
+      icon: '/social/facebook.svg',
     },
-    social: {
-      title: {
-        en: 'Connect with me',
-        bn: 'আমার সাথে যুক্ত হোন',
-      },
-      links: [
-        {
-          icon: <Linkedin size={24} />,
-          href: 'https://www.linkedin.com/in/ridoan2007',
-          color: 'hover:text-blue-400',
-        },
-        {
-          icon: <MessageCircle size={24} />,
-          href: 'https://wa.me/8801712525910',
-          color: 'hover:text-green-400',
-        },
-        {
-          icon: <Facebook size={24} />,
-          href: 'https://www.facebook.com/ridoan2007',
-          color: 'hover:text-blue-500',
-        },
-        {
-          icon: <Instagram size={24} />,
-          href: 'https://www.instagram.com/ridoan2007',
-          color: 'hover:text-pink-400',
-        },
-        {
-          icon: <Twitter size={24} />,
-          href: 'https://x.com/ridoan2007',
-          color: 'hover:text-sky-400',
-        },
-      ],
+    {
+      name: 'LinkedIn',
+      url: content.socialLinks.linkedin,
+      icon: '/social/linkedin.svg',
     },
+    {
+      name: 'Twitter',
+      url: content.socialLinks.twitter,
+      icon: '/social/twitter.svg',
+    },
+  ];
+
+  const copyEmail = () => {
+    navigator.clipboard.writeText(content.email);
+    setIsEmailCopied(true);
+    setTimeout(() => setIsEmailCopied(false), 2000);
   };
 
-  const renderQuickLinks = () => (
-    <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.5 }}
-      viewport={{ once: true }}
-    >
-      <h3 className="text-xl font-bold mb-6 flex items-center gap-2">
-        {footerData.quickLinks.title[language]}
-      </h3>
-      <ul className="space-y-3">
-        {footerData.quickLinks.items.map((item, index) => (
-          <li key={index}>
-            <motion.button
-              whileHover={{ x: 5 }}
-              onClick={item.action}
-              className="flex items-center gap-2 text-gray-300 hover:text-white transition-colors w-full text-left"
-            >
-              {item.icon}
-              {item.text[language]}
-            </motion.button>
-          </li>
-        ))}
-      </ul>
-    </motion.div>
-  );
+  return (
+    <footer className="bg-slate-900 text-slate-200 pt-10 pb-6">
+      <div className="container mx-auto px-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10">
+          {/* About */}
+          <div>
+            <h3 className="text-xl font-bold mb-4 text-white">
+              {language === 'en' ? 'About Me' : 'আমার সম্পর্কে'}
+            </h3>
+            <p className="text-slate-300 mb-4">{content[language].shortBio}</p>
+          </div>
 
-  const renderDocuments = () => (
-    <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.5, delay: 0.1 }}
-      viewport={{ once: true }}
-    >
-      <h3 className="text-xl font-bold mb-6 flex items-center gap-2">
-        <FileText size={20} />
-        {footerData.documents.title[language]}
-      </h3>
-      <ul className="space-y-3">
-        {footerData.documents.items.map((item, index) => (
-          <li key={index}>
-            <motion.button
-              whileHover={{ x: 5 }}
-              onClick={item.action}
-              className="flex items-center gap-2 text-gray-300 hover:text-white transition-colors w-full text-left"
-            >
-              {item.icon}
-              {item.text[language]}
-            </motion.button>
-          </li>
-        ))}
-      </ul>
-    </motion.div>
-  );
+          {/* Quick Links */}
+          <div>
+            <h3 className="text-xl font-bold mb-4 text-white">
+              {language === 'en' ? 'Quick Links' : 'দ্রুত লিঙ্ক'}
+            </h3>
+            <ul className="space-y-2">
+              {quickLinks.map((link, index) => (
+                <li key={index} className="transition-transform hover:translate-x-1">
+                  <Link
+                    to={link.path}
+                    className="flex items-center gap-2 text-slate-300 hover:text-green-400"
+                  >
+                    {link.icon}
+                    <span>{link.name}</span>
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
 
-  const renderContactInfo = () => (
-    <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.5, delay: 0.2 }}
-      viewport={{ once: true }}
-    >
-      <h3 className="text-xl font-bold mb-6 flex items-center gap-2">
-        <Mail size={20} />
-        {footerData.contact.title[language]}
-      </h3>
-      <address className="not-italic space-y-3">
-        {footerData.contact.items.map((item, index) =>
-          item.link ? (
-            <motion.a
-              key={index}
-              whileHover={{ x: 5 }}
-              href={item.link}
-              className="flex items-center gap-2 text-gray-300 hover:text-white transition-colors"
-            >
-              {item.icon}
-              {typeof item.text === 'string'
-                ? item.text
-                : item.text[language]}
-            </motion.a>
-          ) : (
-            <motion.p
-              key={index}
-              whileHover={{ x: 5 }}
-              className="flex items-center gap-2 text-gray-300"
-            >
-              {item.icon}
-              {typeof item.text === 'string'
-                ? item.text
-                : item.text[language]}
-            </motion.p>
-          )
-        )}
-      </address>
-    </motion.div>
-  );
+          {/* Social Media */}
+          <div>
+            <h3 className="text-xl font-bold mb-4 text-white">
+              {language === 'en' ? 'Find Me On' : 'আমাকে খুঁজুন'}
+            </h3>
+            <div className="flex flex-wrap gap-3">
+              {socialMedias.map((social, index) => (
+                <motion.a
+                  key={index}
+                  href={social.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  whileHover={{ scale: 1.1 }}
+                  whileTap={{ scale: 0.95 }}
+                  className={cn(
+                    'w-10 h-10 flex items-center justify-center rounded-full',
+                    'bg-slate-800 hover:bg-slate-700 transition-colors'
+                  )}
+                  aria-label={social.name}
+                >
+                  <img
+                    src={social.icon}
+                    alt={social.name}
+                    className="w-5 h-5 opacity-80"
+                  />
+                </motion.a>
+              ))}
+            </div>
+          </div>
 
-  const renderSocialLinks = () => (
-    <Element name="social-links">
-      <motion.div
-        initial={{ opacity: 0 }}
-        whileInView={{ opacity: 1 }}
-        transition={{ duration: 0.5, delay: 0.3 }}
-        viewport={{ once: true }}
-        className="mt-12 pt-8 border-t border-gray-700"
-      >
-        <div className="flex flex-col items-center">
-          <h4 className="text-lg font-medium mb-6">
-            {footerData.social.title[language]}
-          </h4>
-          <div className="flex justify-center space-x-6">
-            {footerData.social.links.map((social, index) => (
-              <motion.a
-                key={index}
-                href={social.href}
-                target="_blank"
-                rel="noopener noreferrer"
-                whileHover={{ y: -3, scale: 1.1 }}
-                whileTap={{ scale: 0.9 }}
-                className={`text-gray-300 ${social.color} transition-colors duration-300`}
-                aria-label={`Social link ${index}`}
-              >
-                {social.icon}
-              </motion.a>
-            ))}
+          {/* Contact */}
+          <div>
+            <h3 className="text-xl font-bold mb-4 text-white">
+              {language === 'en' ? 'Contact' : 'যোগাযোগ'}
+            </h3>
+            <div className="space-y-3">
+              <p className="flex items-center gap-2">
+                <Mail size={18} className="text-green-400" />
+                <button
+                  onClick={copyEmail}
+                  className="text-slate-300 hover:text-green-400 cursor-pointer"
+                >
+                  {isEmailCopied
+                    ? language === 'en'
+                      ? 'Copied!'
+                      : 'কপি করা হয়েছে!'
+                    : content.email}
+                </button>
+              </p>
+            </div>
           </div>
         </div>
-      </motion.div>
-    </Element>
-  );
 
-  return (
-    <footer className="bg-gradient-to-br from-gray-900 to-gray-800 text-white py-12 relative overflow-hidden">
-      {/* Decorative elements */}
-      <div className="absolute inset-0 overflow-hidden opacity-20">
-        <div className="absolute top-0 left-0 w-full h-full bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-30"></div>
-        <div className="absolute top-0 right-0 w-64 h-64 bg-purple-500 rounded-full filter blur-[90px] opacity-10"></div>
-      </div>
-
-      <div className="container mx-auto px-4 relative z-10">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-          {renderQuickLinks()}
-          {renderDocuments()}
-          {renderContactInfo()}
-        </div>
-
-        {renderSocialLinks()}
-
-        {/* Copyright */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          transition={{ duration: 0.5, delay: 0.4 }}
-          viewport={{ once: true }}
-          className="mt-8 text-center text-gray-400 text-sm"
-        >
-          <p>
-            &copy; {new Date().getFullYear()} {content?.name || ''}.{' '}
+        <div className="border-t border-slate-800 mt-10 pt-5 flex flex-col md:flex-row justify-between items-center">
+          <p className="text-slate-400 text-sm">
+            © {new Date().getFullYear()}{' '}
             {language === 'en'
-              ? 'All rights reserved'
-              : 'সমস্ত অধিকার সংরক্ষিত'}
-            .
+              ? 'Md Ridoan Mahmud Zisan. All rights reserved.'
+              : 'মোঃ রিদোয়ান মাহমুদ জিসান। সর্বস্বত্ব সংরক্ষিত।'}
           </p>
-        </motion.div>
+          <p className="text-slate-400 text-sm mt-2 md:mt-0">
+            {language === 'en'
+              ? 'Made with ❤️ by Ridoan'
+              : '❤️ দিয়ে তৈরি করেছেন রিদোয়ান'}
+          </p>
+        </div>
       </div>
     </footer>
   );
