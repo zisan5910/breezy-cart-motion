@@ -6,14 +6,6 @@ import {
   Loader2,
   X,
   Mail,
-  Briefcase,
-  GraduationCap,
-  Award,
-  Heart,
-  Linkedin,
-  Phone,
-  MapPin,
-  ExternalLink,
 } from 'lucide-react';
 import { format } from 'date-fns';
 import { motion } from 'framer-motion';
